@@ -57,26 +57,33 @@ directions = ["n", "e", "w", "s"]
 
 # Write a loop that:
 #
+# * Prints the current room name
+print(
+    f"\nYou're in {player.current_room.room_name}\nand it's {player.current_room.description}\n")
 
 while True:
 
-    # * Prints the current room name
-    print(f"\n{player.current_location} \n")
-
-# * Prints the current description (the textwrap module might be useful here).
+    # * Prints the current description (the textwrap module might be useful here).
     direction_input = input(
         "Which direction would you like to go? (N,E,W,S)\n").strip().lower().split()[0]
+    sleep(1)
+    clear()
     direction_input = direction_input[0]
     if direction_input == 'q':
         break
 
     if direction_input in directions:
-        print(f"Typed input: {direction_input}\n")
+        is_valid = player.move_to(direction_input)
+        if is_valid:
+            print(
+                f"Entered to {player.current_room.room_name} and it's {player.current_room.description}\n")
+        else:
+            print(f"You can't move to that direction try something else: ")
     else:
         print(f"Please Enter a Valid Direction {direction_input}\n")
 
-    sleep(2)
-    clear()
+    # sleep(5)
+    # clear()
 # * Waits for user input and decides what to do.
 #
 # If the user enters a cardinal direction, attempt to move to the room there.
