@@ -33,12 +33,19 @@ class Player:
             self.current_room.remove_item(item)
 
     def drop_item(self, item):
-        chc = [i for i in self.inventory if item == i[0].item_name]
-        print(f"{chc}  {item}   {chc.item_name}, {chc.item_description}")
+        chc = [i[0]
+               for i in self.inventory if item == i[0].item_name]
+
+        # for den in chc:
+        print(f"ya {chc[0].item_name} ")
         if not chc:
             print(f"item not exist in inventory")
         else:
-            #self.current_room.add_item_rm(["Helmet", "Helmet 100+"])
+            find_index = [index for index, i in enumerate(
+                self.inventory) if item == i[0].item_name]
+
+            print(f"{find_index[0]} ")
+            del self.inventory[find_index[0]]
             self.current_room.items.append(Item(
-                {chc.item_name}, {chc.item_description}))
+                chc[0].item_name, chc[0].item_description))
             print(f"Succesfully deleted")
