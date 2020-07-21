@@ -1,5 +1,6 @@
 from room import Room
 from player import Player
+from item import Item
 from os import system, name
 from time import sleep
 # Declare all the rooms
@@ -36,6 +37,12 @@ room['narrow'].n_to = room['treasure']
 room['treasure'].s_to = room['narrow']
 
 
+# room['outside'].items = Item("Sword", "Steel Sword")
+# room['outside'].items = Item("Helmet", "Helmet 100+")
+# room['foyer'].items = Item("Knife", "Steel Knife")
+# room['narrow'].items = Item("Pistol", "9mm Pistol")
+
+
 def clear():
 
     # for windows
@@ -54,29 +61,60 @@ def clear():
 
 player = Player(room['outside'])
 directions = ["n", "e", "w", "s"]
+player_inventory = []
+
+room['outside'].items = [
+    Item("Sword", "Steel Sword"), Item("Helmet", "Helmet 100+")]
+room['foyer'].items = [Item("Knife", "Steel Knife")]
+room['narrow'].items = [Item("Pistol", "9mm Pistol")]
 
 # Write a loop that:
 #
 # * Prints the current room name
 print(
-    f"\nYou're in {player.current_room.room_name}\nand it's {player.current_room.description}\n")
-
+    f"\nYou're in {player.current_room.room_name}\nand it's {player.current_room.description}\n\nRoom Items List:")
+player.current_room.item_list()
+# print("\nPlayer Inventory: ")
+# player.inventory_list()
+# print()
 while True:
 
     # * Prints the current description (the textwrap module might be useful here).
+    print("\nPlayer Inventory: ")
+    player.inventory_list()
+    print()
     direction_input = input(
-        "Which direction would you like to go? (N,E,W,S)\n").strip().lower().split()[0]
-    sleep(1)
-    clear()
+        "Which direction would you like to go? Or you can pick up or drop off items\nEnter:\nTo move --> (N,E,W,S)\nTo get/drop item/check inventory --> i\nTo Quit --> q\nEnter here: ").strip().lower().split()[0]
+
     direction_input = direction_input[0]
     if direction_input == 'q':
         break
+    elif direction_input == 'i':
+        print(f"\n****\nWelcome to Store!\nRoom Items List:")
+        player.current_room.item_list()
+        inv_input = input(
+            f"You can pick up or drop off items. Simlpy type drop get [ITEM_NAME] or [ITEM_NAME]\nEnter Here:").strip().title().split()
+        if inv_input[0] == 'Get':
+            # print(f"\n Picked item: {inv_input[1]}")
+            # player.current_room.check_item_availability(inv_input[1])
+            # player.current_room.remove_item(inv_input[1])
+            player.add_item(inv_input[1])
+        elif inv_input[0] == 'Drop':
+            player.drop_item(inv_input[1])
+            #  print(f"\n Dropped item: {inv_input[1]}")
+        elif inv_input[0] == 'Q':
+            continue
+        else:
+            print(f"\n Invalid command! {inv_input[0]} {inv_input[1]}")
 
-    if direction_input in directions:
+        print(f"\n****")
+    elif direction_input in directions:
         is_valid = player.move_to(direction_input)
         if is_valid:
             print(
-                f"Entered to {player.current_room.room_name} and it's {player.current_room.description}\n")
+                f"\n**\nEntered to {player.current_room.room_name} and it's {player.current_room.description}\n\nRoom Items List:")
+            player.current_room.item_list()
+            print()
         else:
             print(f"You can't move to that direction try something else: ")
     else:
